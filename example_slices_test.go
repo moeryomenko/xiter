@@ -3,6 +3,7 @@ package xiter_test
 import (
 	"fmt"
 	"slices"
+	"strconv"
 
 	"github.com/moeryomenko/xiter"
 )
@@ -86,4 +87,14 @@ func ExapleAppendSeqFunc() {
 
 	fmt.Println(appended)
 	// Output: [1 2 3 12 15 18]
+}
+
+func ExampleMap() {
+	intSlice := []int{1, 2, 3}
+
+	// Apply a function that convert to string each element
+	stringSlice := xiter.Map(intSlice, func(e int) string { return strconv.Itoa(e) })
+
+	fmt.Println(stringSlice)
+	// Output: [1 2 3]
 }

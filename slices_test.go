@@ -3,6 +3,7 @@ package xiter_test
 import (
 	"iter"
 	"slices"
+	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -232,6 +233,46 @@ func Test_AppendIf(t *testing.T) {
 			t.Parallel()
 
 			got := xiter.AppendIf(tc.s1, tc.s2, tc.fn)
+
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("(-want +got):\n%s", diff)
+			}
+		})
+	}
+}
+
+func Test_Map(t *testing.T) {
+	t.Parallel()
+
+	testcases := map[string]struct {
+		slice []int
+		fn    func(int) string
+		want  []string
+	}{
+		"empty slice": {
+			slice: []int{},
+			fn:    func(x int) string { return strconv.Itoa(x + 1) },
+			want:  nil,
+		},
+		"non-empty slice": {
+			slice: []int{1, 2, 3},
+			fn:    func(x int) string { return strconv.Itoa(x + 1) },
+			want:  []string{"2", "3", "4"},
+		},
+		"multiply by two": {
+			slice: []int{1, 2, 3},
+			fn:    func(x int) string { return strconv.Itoa(x * 2) },
+			want:  []string{"2", "4", "6"},
+		},
+	}
+
+	for caseName, tc := range testcases {
+		tc := tc
+
+		t.Run(caseName, func(t *testing.T) {
+			t.Parallel()
+
+			got := xiter.Map(tc.slice, tc.fn)
 
 			if diff := cmp.Diff(tc.want, got); diff != "" {
 				t.Errorf("(-want +got):\n%s", diff)

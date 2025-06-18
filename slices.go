@@ -5,6 +5,15 @@ import (
 	"slices"
 )
 
+// Map returns a new slice containing the results of applying fn to each element of s.
+func Map[E, V any](s []E, fn func(E) V) []V {
+	if len(s) == 0 {
+		return nil
+	}
+
+	return AppendFunc(make([]V, 0, len(s)), s, fn)
+}
+
 // IterFunc returns a sequence that yields the results of applying fn to each element of seq.
 func IterFunc[E, V any](seq iter.Seq[E], fn func(E) V) iter.Seq[V] {
 	return func(yield func(V) bool) {
