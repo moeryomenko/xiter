@@ -98,3 +98,23 @@ func ExampleMap() {
 	fmt.Println(stringSlice)
 	// Output: [1 2 3]
 }
+
+func ExampleFoldLeft() {
+	seq := []int{1, 2, 3, 4}
+
+	// Fold the sequence to calculate the sum
+	sum := xiter.FoldLeft(seq, 0, func(acc, v int) int { return acc + v })
+
+	fmt.Println(sum)
+	// Output: 10
+}
+
+func ExampleFoldRight() {
+	seq := []int{1, 2, 3, 4}
+
+	// Fold the sequence to calculate the sum
+	sum := xiter.FoldLeft(seq, 12, func(acc, v int) int { return acc - v })
+
+	fmt.Println(sum)
+	// Output: 2
+}

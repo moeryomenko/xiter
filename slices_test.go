@@ -4,6 +4,7 @@ import (
 	"iter"
 	"slices"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -279,4 +280,68 @@ func Test_Map(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_FoldLeft(t *testing.T) {
+	t.Parallel()
+
+	t.Run("sum", func(t *testing.T) {
+		slice := []int{1, 2, 3, 4, 5}
+
+		fn := func(acc, e int) int { return acc + e }
+
+		want := 15
+
+		got := xiter.FoldLeft(slice, 0, fn)
+
+		if got != want {
+			t.Errorf("FoldLeft() = %d, want %d", got, want)
+		}
+	})
+
+	t.Run("build string", func(t *testing.T) {
+		slice := []string{"Hello", " ", "World", "!"}
+
+		fn := func(acc strings.Builder, e string) strings.Builder { acc.WriteString(e); return acc }
+
+		want := "Hello World!"
+
+		got := xiter.FoldLeft(slice, strings.Builder{}, fn)
+
+		if diff := cmp.Diff(want, got.String()); diff != "" {
+			t.Errorf("(-want +got):\n%s", diff)
+		}
+	})
+}
+
+func Test_FoldRight(t *testing.T) {
+	t.Parallel()
+
+	t.Run("minus", func(t *testing.T) {
+		slice := []int{1, 2, 3, 4, 5}
+
+		fn := func(acc, e int) int { return acc - e }
+
+		want := 5
+
+		got := xiter.FoldRight(slice, 20, fn)
+
+		if got != want {
+			t.Errorf("FoldLeft() = %d, want %d", got, want)
+		}
+	})
+
+	t.Run("build string", func(t *testing.T) {
+		slice := []string{"Hello", " ", "World", "!"}
+
+		fn := func(acc strings.Builder, e string) strings.Builder { acc.WriteString(e); return acc }
+
+		want := "!World Hello"
+
+		got := xiter.FoldRight(slice, strings.Builder{}, fn)
+
+		if diff := cmp.Diff(want, got.String()); diff != "" {
+			t.Errorf("(-want +got):\n%s", diff)
+		}
+	})
 }

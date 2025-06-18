@@ -5,6 +5,24 @@ import (
 	"slices"
 )
 
+// FoldRight returns the result of repeatedly applying fn to the elements of s, from right to left.
+func FoldRight[Slice ~[]E, E, V any](s Slice, initial V, fn func(V, E) V) V {
+	for i := len(s) - 1; i >= 0; i-- {
+		initial = fn(initial, s[i])
+	}
+
+	return initial
+}
+
+// FoldLeft returns the result of repeatedly applying fn to the elements of s, from left to right.
+func FoldLeft[Slice ~[]E, E, V any](s Slice, initial V, fn func(V, E) V) V {
+	for _, v := range s {
+		initial = fn(initial, v)
+	}
+
+	return initial
+}
+
 // Map returns a new slice containing the results of applying fn to each element of s.
 func Map[E, V any](s []E, fn func(E) V) []V {
 	if len(s) == 0 {
