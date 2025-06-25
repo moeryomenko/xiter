@@ -32,6 +32,22 @@ func Map[E, V any](s []E, fn func(E) V) []V {
 	return AppendFunc(make([]V, 0, len(s)), s, fn)
 }
 
+// MapIf returns a new slice containing the results of applying fn to each element of s, but only if fn returns true.
+func MapIf[E, V any](s []E, fn func(E) (V, bool)) []V {
+	if len(s) == 0 {
+		return nil
+	}
+
+	ret := make([]V, 0, len(s))
+	for _, v := range s {
+		if val, ok := fn(v); ok {
+			ret = append(ret, val)
+		}
+	}
+
+	return ret
+}
+
 // IterFunc returns a sequence that yields the results of applying fn to each element of seq.
 func IterFunc[E, V any](seq iter.Seq[E], fn func(E) V) iter.Seq[V] {
 	return func(yield func(V) bool) {

@@ -99,6 +99,16 @@ func ExampleMap() {
 	// Output: [1 2 3]
 }
 
+func ExampleMapIf() {
+	intSlice := []int{1, 2, 3, 4, 5}
+
+	// Apply a function that convert to string each element if it is even
+	stringSlice := xiter.MapIf(intSlice, func(e int) (string, bool) { return strconv.Itoa(e), e%2 == 0 })
+
+	fmt.Println(stringSlice)
+	// Output: [2 4]
+}
+
 func ExampleFoldLeft() {
 	seq := []int{1, 2, 3, 4}
 

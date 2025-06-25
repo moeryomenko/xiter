@@ -345,3 +345,58 @@ func Test_FoldRight(t *testing.T) {
 		}
 	})
 }
+
+func Test_MapIf(t *testing.T) {
+	t.Parallel()
+
+	testcases := map[string]struct {
+		slice []int
+		fn    func(int) (string, bool)
+		want  []string
+	}{
+		"empty slice": {
+			slice: []int{},
+			fn:    func(x int) (string, bool) { return strconv.Itoa(x), true },
+			want:  nil,
+		},
+		"all elements pass": {
+			slice: []int{1, 2, 3},
+			fn:    func(x int) (string, bool) { return strconv.Itoa(x + 1), true },
+			want:  []string{"2", "3", "4"},
+		},
+		"some elements pass": {
+			slice: []int{1, 2, 3, 4, 5},
+			fn: func(x int) (string, bool) {
+				if x%2 == 0 {
+					return strconv.Itoa(x * 2), true
+				}
+				return "", false
+			},
+			want: []string{"4", "8"},
+		},
+		"no elements pass": {
+			slice: []int{1, 3, 5},
+			fn: func(x int) (string, bool) {
+				if x%2 == 0 {
+					return strconv.Itoa(x), true
+				}
+				return "", false
+			},
+			want: []string{},
+		},
+	}
+
+	for caseName, tc := range testcases {
+		tc := tc
+
+		t.Run(caseName, func(t *testing.T) {
+			t.Parallel()
+
+			got := xiter.MapIf(tc.slice, tc.fn)
+
+			if diff := cmp.Diff(tc.want, got); diff != "" {
+				t.Errorf("(-want +got):\n%s", diff)
+			}
+		})
+	}
+}
